@@ -2,28 +2,28 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
-  output   = "../generated/prisma"
-}
+  provider = "prisma-client-js" // This line specifies the provider for the Prisma client
+  output   = "../generated/prisma" // This line specifies the output directory for the generated Prisma client
+} // This line specifies the output directory for the generated Prisma client
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
-}
+  provider = "sqlite" // This line specifies the database provider, in this case, SQLite
+  url      = env("DATABASE_URL") // This line specifies the connection URL for the database, which is stored in an environment variable
+} // This line specifies the database provider and the connection URL from an environment variable
 
 model User {
-  id        Int       @id @default(autoincrement())
+  id        Int       @id @default(autoincrement()) // This line defines the primary key for the User model, which is an auto-incrementing integer
   name      String
-  email     String    @unique
+  email     String    @unique // This line defines the email field as unique, ensuring no two users can have the same email
   bio       String?
   avatar    String?
   password  String?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  createdAt DateTime  @default(now()) // This line sets the default value for createdAt to the current date and time when a user is created
+  updatedAt DateTime  @updatedAt // This line automatically updates the updatedAt field to the current date and time whenever the user is updated
   posts     Post[]
   comments  Comment[]
   likes     Like[]
-}
+} // This model represents a user in the system
 
 model Post {
   id        Int       @id @default(autoincrement())
@@ -31,30 +31,30 @@ model Post {
   title     String
   content   String
   thumbnail String?
-  published Boolean   @default(false)
+  published Boolean   @default(false) // This line sets the default value for published to false, indicating that posts are unpublished by default
   authorId  Int
-  author    User      @relation(fields: [authorId], references: [id])
+  author    User      @relation(fields: [authorId], references: [id]) // This line establishes a relation to the User model, linking the post to its author
   comments  Comment[]
-  tags      Tag[]     @relation("PostTags")
+  tags      Tag[]     @relation("PostTags") // This line establishes a many-to-many relation with the Tag model, allowing posts to have multiple tags
   likes     Like[]
-}
+} // This model represents a blog post, including its author and associated comments and tags
 
 model Comment {
   id        Int      @id @default(autoincrement())
   content   String
   postId    Int
-  post      Post     @relation(fields: [postId], references: [id])
+  post      Post     @relation(fields: [postId], references: [id]) // This line establishes a relation to the Post model, linking the comment to the post it belongs to
   authorId  Int
-  author    User     @relation(fields: [authorId], references: [id])
+  author    User     @relation(fields: [authorId], references: [id]) // This line establishes a relation to the User model, linking the comment to its author
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-}
+} // This model represents a comment on a post, including the author and the post it belongs to
 
 model Tag {
   id    Int    @id @default(autoincrement())
   name  String @unique
   posts Post[] @relation("PostTags")
-}
+} // This model represents a tag that can be associated with multiple posts
 
 model Like {
   id     Int  @id @default(autoincrement())
@@ -62,4 +62,4 @@ model Like {
   postId Int
   user   User @relation(fields: [userId], references: [id])
   post   Post @relation(fields: [postId], references: [id])
-}
+} // This model represents a like on a post, including the user who liked it and the post itself
